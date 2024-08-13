@@ -27,6 +27,15 @@ func main() {
 	Quantity := get_excel_column_extractor("Quantity")
 	time := get_excel_column_extractor("Trade Time")
 	Side := get_excel_column_extractor("Side")
+	for c := 0; c < len(companies); c++ {
+		var ticker string
+		db, err := sql.Open("mysql", "root:Karma100%@tcp(localhost:3306)/alert_trade_db")
+		if err != nil {
+			log.Println(err)
+		}
+		db.QueryRow("call stp_get_symbol_by_company(?)", companies[c]).Scan(&ticker)
+		companies[c] = ticker
+	}
 	fmt.Println(companies)
 	fmt.Println(date)
 	fmt.Println(price)

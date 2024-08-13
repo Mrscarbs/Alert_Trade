@@ -33,6 +33,7 @@ func main() {
 	i := 1
 	for i < 2 {
 		token_frame := generate_access_token(username, password, "password", log_file)
+
 		expiry := update_insert_acess_token_db(token_frame.AccessToken, 1, token_frame.ExpiresIn, log_file)
 
 		time.Sleep(time.Second * time.Duration(expiry))

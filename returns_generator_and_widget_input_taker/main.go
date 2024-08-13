@@ -103,7 +103,7 @@ func get_equity_and_historical_performance(c *gin.Context) {
 		log.Println(err)
 	}
 	var stock_equity_map = make(map[string]trade_respnse_final)
-	var trade_list_map = make(map[string][]trade_object)
+	// var trade_list_map = make(map[string][]trade_object)
 	for i := 0; i < len(user_stock_list.List_symbols); i++ {
 		wg.Add(1)
 
@@ -129,7 +129,7 @@ func get_equity_and_historical_performance(c *gin.Context) {
 			fmt.Println("check1")
 			fmt.Println(len(trade_list_final))
 			sum := 0
-			trade_list_map[symbol+"_prices"] = trade_list_final
+			// trade_list_map[symbol+"_prices"] = trade_list_final
 			var arr_equity = []float64{}
 			for i, val := range trade_list_final {
 				price := val.Position_price
@@ -155,6 +155,76 @@ func get_equity_and_historical_performance(c *gin.Context) {
 			fmt.Println("check2")
 
 		}(user_stock_list.List_symbols[i], &wg, user_stock_list.Entity_id)
+	}
+
+	for i := 0; i < len(user_stock_list.List_symbols); i++ {
+
+		wg.Add(1)
+
+		go func(symbol string, wg *sync.WaitGroup, entity_id int) {
+			trade_list, timestamps := get_historical_data(symbol, from, to, "5min", 1)
+
+			trade_list_final, final_timestamps := get_position_history_symbol(2, symbol, entity_id, trade_list, timestamps)
+			fmt.Println(final_timestamps)
+			// sort.Ints(final_timestamps)
+			InsertionSort(trade_list_final)
+			fmt.Println(len(trade_list_final))
+			fmt.Println(trade_list_final)
+
+			fmt.Println("check5")
+
+			for d := 0; d < len(trade_list_final)-1; d++ {
+				if trade_list_final[d].Timestamp == trade_list_final[d+1].Timestamp && trade_list_final[d].Closes != 0 {
+					trade_list_final = append(trade_list_final[:d], trade_list_final[d+1:]...)
+					d--
+				}
+			}
+
+			fmt.Println("check6")
+			fmt.Println(len(trade_list_final))
+
+			// trade_list_map[symbol+"_prices"] = trade_list_final
+			var arr_equity_2 = []float64{}
+			var current_equity_2 float64
+			for i, val := range trade_list_final {
+
+				price := val.Position_price
+
+				if price == 0 {
+					price = val.Closes
+				}
+				if i == 0 {
+					current_equity_2 = float64(val.Position_quantity) * val.Position_price
+					// arr_equity_2 = append(arr_equity_2, current_equity_2)
+
+				} else {
+					var prev_price float64
+					prev_equity := arr_equity_2[i-1]
+
+					if trade_list_final[i-1].Position_price == 0 {
+						prev_price = trade_list_final[i-1].Closes
+
+					} else {
+						prev_price = trade_list_final[i-1].Position_price
+					}
+					quantity := val.Position_quantity
+					current_equity_2 = (prev_equity + (((prev_price - price) / prev_price) * prev_equity)) + (float64(quantity) * price)
+
+				}
+				// var current_equity = float64(sum) * price
+				arr_equity_2 = append(arr_equity_2, current_equity_2)
+				mutex.Lock()
+				trade_response := trade_respnse_final{Equity: arr_equity_2, Trade_details: trade_list_final}
+				stock_equity_map[symbol+"_short"] = trade_response
+				mutex.Unlock()
+
+			}
+
+			wg.Done()
+			fmt.Println("check4")
+
+		}(user_stock_list.List_symbols[i], &wg, user_stock_list.Entity_id)
+
 	}
 	wg.Wait()
 
