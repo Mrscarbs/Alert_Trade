@@ -203,7 +203,7 @@ func main() {
 	router.GET("/get_income_growth", get_income_growth)
 	router.GET("/advanced_discounted_cash_flow", advanced_discounted_cash_flow)
 	router.GET("/advanced_levered_discounted_cash_flow", advanced_levered_discounted_cash_flow)
-	router.Run("localhost:8080")
+	router.Run("localhost:8082")
 
 }
 func advanced_levered_discounted_cash_flow(c *gin.Context) {

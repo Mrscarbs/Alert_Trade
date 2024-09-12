@@ -1,6 +1,6 @@
 module news_trade_alert
 
-go 1.23.0
+go 1.22.0
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect

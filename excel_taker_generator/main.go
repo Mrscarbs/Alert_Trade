@@ -29,7 +29,7 @@ func main() {
 	Side := get_excel_column_extractor("Side")
 	for c := 0; c < len(companies); c++ {
 		var ticker string
-		db, err := sql.Open("mysql", "root:Karma100%@tcp(localhost:3306)/alert_trade_db")
+		db, err := sql.Open("mysql", "root:Karma100%@tcp(host.docker.internal:3306)/alert_trade_db")
 		if err != nil {
 			log.Println(err)
 		}
@@ -50,7 +50,8 @@ func main() {
 	fmt.Println(unix_times)
 	var side_num = 0
 	for i := 0; i < len(companies); i++ {
-		db, err := sql.Open("mysql", "root:Karma100%@tcp(localhost:3306)/alert_trade_db")
+		fmt.Println("er")
+		db, err := sql.Open("mysql", "root:Karma100%@tcp(host.docker.internal:3306)/alert_trade_db")
 		if err != nil {
 			log.Println(err)
 		}

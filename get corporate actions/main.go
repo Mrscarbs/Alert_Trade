@@ -38,7 +38,7 @@ func main() {
 
 func get_acess_token(log_file *os.File) (string, int64) {
 	log.SetOutput(log_file)
-	db, err := sql.Open("mysql", "root:Karma100%@/alert_trade_db")
+	db, err := sql.Open("mysql", "root:Karma100%@tcp(host.docker.internal:3306)/alert_trade_db")
 	if err != nil {
 		log.Println(err)
 	}

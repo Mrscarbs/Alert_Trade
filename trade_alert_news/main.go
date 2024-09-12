@@ -107,7 +107,7 @@ var log_file, _ = os.Create("trade_alert_news.log")
 func main() {
 	router := gin.Default()
 	router.GET("/get_related_news", get_related_news)
-	router.Run("localhost:8080")
+	router.Run("localhost:8083")
 }
 func get_related_news(c *gin.Context) {
 	eid, _ := c.GetQuery("eid")
@@ -145,7 +145,7 @@ func get_related_news(c *gin.Context) {
 }
 func fetch_company_names_db(log_file *os.File, eid int) []string {
 	log.SetOutput(log_file)
-	db, err := sql.Open("mysql", "root:Karma100%@tcp(localhost:3306)/alert_trade_db")
+	db, err := sql.Open("mysql", "root:Karma100%@tcp(host.docker.internal:3306)/alert_trade_db")
 	if err != nil {
 		log.Println(err)
 	}
@@ -174,7 +174,7 @@ func get_search_id_and_api_key(log_file *os.File) (string, string) {
 	var last_updated_time time.Time
 
 	log.SetOutput(log_file)
-	db, err := sql.Open("mysql", "root:Karma100%@tcp(localhost:3306)/alert_trade_db")
+	db, err := sql.Open("mysql", "root:Karma100%@tcp(host.docker.internal:3306)/alert_trade_db")
 	if err != nil {
 		log.Println(err)
 	}
