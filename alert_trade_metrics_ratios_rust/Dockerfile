@@ -1,37 +1,26 @@
-# Build stage
-FROM rust:1.73 as builder
+# Use the latest official Rust image as a parent image
+FROM rust:latest as builder
 
-WORKDIR /usr/src/main
+# Set the working directory in the container
+WORKDIR /usr/src/myapp
 
-# Copy over manifests
-COPY Cargo.toml Cargo.lock ./
-
-# Create a dummy main.rs to build dependencies
-RUN mkdir src && echo "fn main() {}" > src/main.rs
-
-# Build and cache dependencies
-RUN cargo build --release
-
-# Remove the dummy main
-RUN rm src/main.rs
-
-# Now copy your actual source code
-COPY src ./src
+# Copy the entire project
+COPY . .
 
 # Build the application
-RUN touch src/main.rs && cargo build --release
+RUN cargo build --release
 
-# Final stage
-FROM debian:bullseye-slim
+# Use a newer base image that includes libssl.so.3
+FROM debian:bookworm-slim
 
 # Install OpenSSL and CA certificates
-RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libssl3 ca-certificates && rm -rf /var/lib/apt/lists/*
 
-# Copy the build artifact from the build stage
-COPY --from=builder /usr/src/main/target/release/main .
+# Copy the binary from the builder stage
+COPY --from=builder /usr/src/myapp/target/release/alert_trade_metrics_ratios_rust /usr/local/bin/
 
-# Expose the port the app runs on
+# Expose port 8000
 EXPOSE 8000
 
-# Set the startup command to run your binary
-CMD ["./main"]
+# Set the startup command
+CMD ["alert_trade_metrics_ratios_rust"]
