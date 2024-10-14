@@ -1,0 +1,13 @@
+[package]
+name = "MpMlaRust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+lazy_static = "1.4"
+csv = "1.1"
+regex = "1.5"
+sqlx = { version = "0.6", features = ["mysql", "runtime-tokio-native-tls", "macros"] }
+dotenv = "0.15"
+tokio = { version = "1", features = ["full"] }
