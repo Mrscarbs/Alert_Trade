@@ -166,7 +166,7 @@ func company_master(log_file *os.File) {
 
 	json.Unmarshal(res_body, &unfolded_json)
 	// fmt.Println(unfolded_json)
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(localhost:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
 
 	if err_db_open != nil {
 		log.Println(err_db_open)
@@ -191,7 +191,7 @@ func company_master(log_file *os.File) {
 
 func get_ttm_ratios(log_file *os.File) {
 	var unfolded_ttm struct_ttm
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(localhost:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
 	log.SetOutput(log_file)
 	if err_db_open != nil {
 		log.Println(err_db_open)
@@ -253,7 +253,7 @@ func get_ttm_ratios(log_file *os.File) {
 
 func get_quaterly_ratios(log_file *os.File) {
 	var unfolded_quaterly stuct_quaterly_ratios
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(localhost:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
 	log.SetOutput(log_file)
 	if err_db_open != nil {
 		log.Println(err_db_open)
@@ -309,7 +309,7 @@ func get_quaterly_ratios(log_file *os.File) {
 }
 func get_quaterly_ratios2(log_file *os.File) {
 	var unfolded_quaterly stuct_quaterly_ratios
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(localhost:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
 	log.SetOutput(log_file)
 	if err_db_open != nil {
 		log.Println(err_db_open)
@@ -366,7 +366,7 @@ func get_quaterly_ratios2(log_file *os.File) {
 
 func get_quaterly_ratios3(log_file *os.File) {
 	var unfolded_quaterly stuct_quaterly_ratios
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(localhost:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
 	log.SetOutput(log_file)
 	if err_db_open != nil {
 		log.Println(err_db_open)
@@ -423,7 +423,7 @@ func get_quaterly_ratios3(log_file *os.File) {
 
 func get_cash_fow_ratio(log_file *os.File) {
 	var cash_ratio_struct cashflow_ratio
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(localhost:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
 	log.SetOutput(log_file)
 	if err_db_open != nil {
 		log.Println(err_db_open)

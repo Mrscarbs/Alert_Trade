@@ -329,7 +329,8 @@ fn calculate_total_sortino_ratio(analysis_map: &HashMap<i64, Vec<StockAnalysis>>
 }
 
 async fn connect_to_db() -> Result<Pool<MySql>, Error> {
-    let database_url = "mysql://root:Karma100%@tcp(host.docker.internal:3306)/alert_trade_db";
+    let database_url = "mysql://root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db
+";
     
     let pool = MySqlPoolOptions::new()
         .max_connections(5)

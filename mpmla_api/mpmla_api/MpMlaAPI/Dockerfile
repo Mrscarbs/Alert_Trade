@@ -1,27 +1,23 @@
-# Use the latest official Rust image as a parent image
+# Build stage
 FROM rust:latest as builder
-
-# Set the working directory in the container
 WORKDIR /usr/src/myapp
-
-# Copy the entire project
 COPY . .
 
-# Build the application
 RUN cargo build --release
 
-# Use a smaller base image for the final image
+# Runtime stage
 FROM debian:buster-slim
 
-# Install OpenSSL and CA certificates
-RUN apt-get update && apt-get install -y openssl ca-certificates && rm -rf /var/lib/apt/lists/*
-
-# Set environment variable for the database URL
-# Replace the values with your actual database credentials and connection details
-ENV DATABASE_URL=mysql://user:password@host:port/db_name
+# Install MySQL client, OpenSSL, and CA certificates
+RUN apt-get update && \
+    apt-get install -y default-mysql-client openssl ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copy the binary from the builder stage
 COPY --from=builder /usr/src/myapp/target/release/MpMlaAPI /usr/local/bin/
 
-# Set the startup command
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Run the binary
 CMD ["MpMlaAPI"]

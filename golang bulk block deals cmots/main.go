@@ -67,7 +67,7 @@ func get_bulk_deals(log_file *os.File) {
 	// fmt.Println(string(res_body))
 	json.Unmarshal(res_body, &unfolded_bulk)
 	// fmt.Println(unfolded_bulk)
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(localhost:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
 	log.SetOutput(log_file)
 	if err_db_open != nil {
 		log.Println(err_db_open)
@@ -103,7 +103,7 @@ func get_block_deals(log_file *os.File) {
 	// fmt.Println(string(res_body))
 	json.Unmarshal(res_body, &unfolded_bulk)
 	// fmt.Println(unfolded_bulk)
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(localhost:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
 	log.SetOutput(log_file)
 	if err_db_open != nil {
 		log.Println(err_db_open)

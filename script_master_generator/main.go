@@ -40,7 +40,7 @@ func get_userid_pass(log_file *os.File, api_id int) (string, string) {
 	var password string
 	var start_time string
 	var last_update_time string
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(host.docker.internal:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
 
 	if err_db_open != nil {
 		log.Println(err_db_open)
@@ -85,7 +85,7 @@ func get_script_master_true_data(url string, log_file *os.File) {
 	company := df.Col("company")
 	ticksize := df.Col("ticksize")
 	circuit := df.Col("circuit")
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(host.docker.internal:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
 
 	if err_db_open != nil {
 		log.Println(err_db_open)

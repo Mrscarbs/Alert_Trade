@@ -66,7 +66,7 @@ func insert_user_position_detail(c *gin.Context) {
 	if err_binding != nil {
 		log.Println(err_binding)
 	}
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(host.docker.internal:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
 
 	if err_db_open != nil {
 		log.Println(err_db_open)
@@ -241,7 +241,7 @@ func get_historical_data(symbol string, from string, to string, interval string,
 	var acess_token string
 	var expires_in int
 
-	db, err_db_historical_data := sql.Open("mysql", "root:Karma100%@tcp(host.docker.internal:3306)/alert_trade_db")
+	db, err_db_historical_data := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
 	if err_db_historical_data != nil {
 		log.Println(err_db_historical_data)
 	}
@@ -321,7 +321,7 @@ func getFormattedTimes_and_one_year_ago() (string, string) {
 }
 
 func get_position_history_symbol(position_type int, symbol string, entity_id int, trade_list []trade_object, list_timestamps []int) ([]trade_object, []int) {
-	db, err_get_userpositions := sql.Open("mysql", "root:Karma100%@tcp(host.docker.internal:3306)/alert_trade_db")
+	db, err_get_userpositions := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
 	if err_get_userpositions != nil {
 		log.Println(err_get_userpositions)
 	}

@@ -2,8 +2,7 @@ use actix_web::{web, App, HttpServer, HttpResponse, Responder};
 use serde::{Deserialize, Serialize};
 use sqlx::{Pool, MySql, Row}; // Use Row to fetch fields by index
 use sqlx::mysql::MySqlPoolOptions;
-use std::env;
-use dotenv::dotenv;
+
 
 // Struct to represent the input entity ID
 #[derive(Deserialize)]
@@ -21,8 +20,8 @@ struct ShareDetails {
 
 // Function to connect to the MySQL database
 async fn connect_to_mysql_db() -> Pool<MySql> {
-    dotenv().ok(); // Load environment variables from .env file if present
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    // Load environment variables from .env file if present
+    let database_url = "mysql://root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db";
     MySqlPoolOptions::new()
         .max_connections(5)
         .connect(&database_url)
