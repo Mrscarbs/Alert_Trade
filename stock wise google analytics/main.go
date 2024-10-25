@@ -88,7 +88,7 @@ func main() {
 	router := gin.Default()
 	router.GET("/get_intrest_over_time", intrest_overtime)
 	router.GET("/related_queries", related_queries)
-	router.Run("localhost:8084")
+	router.Run("0.0.0.0:8084")
 }
 
 func intrest_overtime(c *gin.Context) {

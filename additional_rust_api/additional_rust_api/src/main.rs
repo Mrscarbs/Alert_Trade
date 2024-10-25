@@ -141,7 +141,7 @@ async fn fetch_top_n_losers(client: &Client, params: &TopNRecordsRequest, access
 
 // Function to connect to MySQL database
 async fn connect_to_mysql_db() -> Result<Pool<MySql>, Error> {
-    let database_url = "mysql://root:Karma100%@localhost/alert_trade_db";
+    let database_url = "mysql://root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db";
     let pool = MySqlPoolOptions::new()
         .max_connections(5)
         .connect(database_url)
@@ -314,7 +314,7 @@ async fn main() -> std::io::Result<()> {
     let pool = connect_to_mysql_db().await.expect("Failed to create MySQL pool");
 
     // Log the start of the server
-    let startup_message = "Starting the Actix Web server on http://127.0.0.1:8080".to_string();
+    let startup_message = "Starting the Actix Web server on http://0.0.0.0:8080".to_string();
     log_to_file(&startup_message);
     info!("{}", startup_message);
 
@@ -326,7 +326,7 @@ async fn main() -> std::io::Result<()> {
             .route("/get-top-gainers", web::get().to(handle_get_top_n_gainers))
             .route("/get-top-losers", web::get().to(handle_get_top_n_losers))
     })
-    .bind("127.0.0.1:8080")?
+    .bind("0.0.0.0:8080")?
     .run()
     .await
 }

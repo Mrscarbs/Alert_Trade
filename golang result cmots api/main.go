@@ -92,7 +92,7 @@ func main() {
 	router.GET("/get_balance_sheet", get_balance_sheet)
 	router.GET("/get_share_holding_pattern", get_share_holding_pattern)
 	router.GET("/get_mutualfunds_holdings", get_mutualfunds_holdings)
-	router.Run("localhost:8089")
+	router.Run("0.0.0.0:8089")
 
 }
 

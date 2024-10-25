@@ -20,7 +20,7 @@ type change_val struct {
 func main() {
 	router := gin.Default()
 	router.GET("/get_company_wise_mf_increment_decrement", get_company_wise_mf_increment_decrement)
-	router.Run("localhost:8090")
+	router.Run("0.0.0.0:8090")
 
 }
 

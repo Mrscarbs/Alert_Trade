@@ -32,7 +32,7 @@ var main_log, _ = os.Create("main_corp_log.log")
 func main() {
 	router := gin.Default()
 	router.GET("/get_corp_action", get_corp_action)
-	router.Run("localhost:8081")
+	router.Run("0.0.0.0:8081")
 
 }
 

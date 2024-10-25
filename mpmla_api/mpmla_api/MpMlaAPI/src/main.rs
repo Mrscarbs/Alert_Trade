@@ -74,7 +74,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(pool_data.clone())
             .route("/get_share_details", web::post().to(get_candidate_share_details))
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("0.0.0.0", 8080))?
     .run()
     .await
 }

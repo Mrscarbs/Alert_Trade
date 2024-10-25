@@ -1,22 +1,66 @@
 # Build stage
-FROM rust:latest as builder
-WORKDIR /usr/src/myapp
-COPY . .
+FROM rust:1.75-slim-bullseye as builder
 
-RUN cargo build --release
+# Install build dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    pkg-config \
+    libssl-dev \
+    default-libmysqlclient-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create working directory
+WORKDIR /usr/src/myapp
+
+# Copy manifests
+COPY Cargo.toml Cargo.lock ./
+
+# Cache dependencies
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    cargo init && \
+    cargo build --release && \
+    rm src/*.rs
+
+# Copy source code
+COPY ./src ./src
+
+# Build for release with dependency caching
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    cargo build --release
 
 # Runtime stage
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
-# Install MySQL client, OpenSSL, and CA certificates
+# Install runtime dependencies
 RUN apt-get update && \
-    apt-get install -y default-mysql-client openssl ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends \
+    default-mysql-client \
+    libssl3 \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy the binary from the builder stage
+# Create non-root user
+RUN useradd -r -s /bin/false appuser
+
+# Copy the binary from builder
 COPY --from=builder /usr/src/myapp/target/release/MpMlaAPI /usr/local/bin/
 
-# Expose the port the app runs on
+# Add healthcheck
+HEALTHCHECK --interval=30s --timeout=3s \
+    CMD curl -f http://localhost:8080/health || exit 1
+
+# Add metadata
+LABEL maintainer="Your Name <your.email@example.com>"
+LABEL version="1.0"
+LABEL description="MpMla API Server"
+
+# Switch to non-root user
+USER appuser
+
+# Create and set working directory
+WORKDIR /app
+
+# Expose the port
 EXPOSE 8080
 
 # Run the binary

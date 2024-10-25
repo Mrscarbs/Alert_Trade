@@ -107,7 +107,7 @@ var log_file, _ = os.Create("trade_alert_news.log")
 func main() {
 	router := gin.Default()
 	router.GET("/get_related_news", get_related_news)
-	router.Run("localhost:8083")
+	router.Run("0.0.0.0:8083")
 }
 func get_related_news(c *gin.Context) {
 	eid, _ := c.GetQuery("eid")

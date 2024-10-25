@@ -68,7 +68,7 @@ func main() {
 
 	router := gin.Default()
 	router.GET("/screener", screener)
-	router.Run("localhost:8088")
+	router.Run("0.0.0.0:8088")
 }
 
 func screener(c *gin.Context) {

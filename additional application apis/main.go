@@ -59,7 +59,7 @@ func main() {
 	router.GET("get_bulk_deals_cocode", get_bulk_deals_cocode)
 	router.GET("get_block_deals_cocode", get_block_deals_cocode)
 	router.GET("get_shareholding_mp_mla", get_shareholding_mp_mla)
-	router.Run("localhost:8091")
+	router.Run("0.0.0.0:8091")
 
 }
 
