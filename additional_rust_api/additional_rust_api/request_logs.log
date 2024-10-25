@@ -1,0 +1,38 @@
+2024-10-22 11:03:30.988429700 UTC - Starting the Actix Web server on http://127.0.0.1:8080
+2024-10-22 11:04:25.226584800 UTC - Received /get-history-bars request: Query(HistoryBarsRequest { symbol: "RELIANCE", bidask: 0, from: "210224T09:00:00", to: "210225T15:30:00", response_type: "json\n" })
+2024-10-22 11:04:25.407768700 UTC - Successfully fetched data from TrueData API
+2024-10-22 11:08:32.291587500 UTC - Starting the Actix Web server on http://127.0.0.1:8080
+2024-10-22 11:09:39.287960900 UTC - Received /get-history-bars request: Query(HistoryBarsRequest { symbol: "RELIANCE", bidask: 1, from: "210224T09:00:00", to: "210225T15:30:00", interval: "1min", response_type: "json\n" })
+2024-10-22 11:09:39.460499200 UTC - Successfully fetched data from TrueData API
+2024-10-22 11:11:18.950194600 UTC - Received /get-history-bars request: Query(HistoryBarsRequest { symbol: "RELIANCE", bidask: 0, from: "210224T09:00:00", to: "210225T15:30:00", interval: "60min", response_type: "json\n" })
+2024-10-22 11:11:19.092727400 UTC - Successfully fetched data from TrueData API
+2024-10-22 11:12:02.343165500 UTC - Received /get-history-bars request: Query(HistoryBarsRequest { symbol: "RELIANCE", bidask: 0, from: "230224T09:00:00", to: "240225T15:30:00", interval: "60min", response_type: "json\n" })
+2024-10-22 11:12:02.473682300 UTC - Successfully fetched data from TrueData API
+2024-10-22 11:13:33.001429500 UTC - Starting the Actix Web server on http://127.0.0.1:8080
+2024-10-22 11:13:40.367773300 UTC - Received /get-history-bars request: Query(HistoryBarsRequest { symbol: "RELIANCE", bidask: 0, from: "230224T09:00:00", to: "240225T15:30:00", interval: "60min", response_type: "json\n" })
+2024-10-22 11:13:40.457381600 UTC - Successfully fetched data from TrueData API
+2024-10-22 11:49:20.373604400 UTC - Starting the Actix Web server on http://127.0.0.1:8080
+2024-10-22 12:01:10.977230600 UTC - Starting the Actix Web server on http://127.0.0.1:8080
+2024-10-22 12:09:21.562439100 UTC - Received /get-top-gainers request: Query(TopNRecordsRequest { segment: "NSEEQ", response_type: "JSON", topn: 10 })
+2024-10-22 12:09:21.707691600 UTC - Successfully fetched top N gainers from TrueData API
+2024-10-22 12:09:46.818793600 UTC - Received /get-top-gainers request: Query(TopNRecordsRequest { segment: "NSEEQ", response_type: "JSON", topn: 10 })
+2024-10-22 12:09:46.922984500 UTC - Successfully fetched top N gainers from TrueData API
+2024-10-22 12:09:57.810451800 UTC - Received /get-top-gainers request: Query(TopNRecordsRequest { segment: "NSEEQ", response_type: "JSON", topn: 50 })
+2024-10-22 12:09:57.922486700 UTC - Successfully fetched top N gainers from TrueData API
+2024-10-22 12:10:17.905306 UTC - Received /get-top-gainers request: Query(TopNRecordsRequest { segment: "NSEEQ", response_type: "JSON", topn: 10 })
+2024-10-22 12:10:18.096283900 UTC - Successfully fetched top N gainers from TrueData API
+2024-10-22 12:12:21.541205100 UTC - Received /get-top-gainers request: Query(TopNRecordsRequest { segment: "NSEEQ", response_type: "json", topn: 50 })
+2024-10-22 12:12:21.688279700 UTC - Successfully fetched top N gainers from TrueData API
+2024-10-22 12:15:10.017867200 UTC - Received /get-top-losers request: Query(TopNRecordsRequest { segment: "NSEEQ", response_type: "JSON", topn: 10 })
+2024-10-22 12:15:10.167031200 UTC - Successfully fetched top N losers from TrueData API
+2024-10-22 12:20:15.469543600 UTC - Received /get-top-gainers request: Query(TopNRecordsRequest { segment: "NSEEQ", response_type: "json", topn: 50 })
+2024-10-22 12:20:15.604342100 UTC - Successfully fetched top N gainers from TrueData API
+2024-10-22 12:20:48.350198800 UTC - Starting the Actix Web server on http://127.0.0.1:8080
+2024-10-22 12:20:53.418951800 UTC - Received /get-top-gainers request: Query(TopNRecordsRequest { segment: "NSEEQ", response_type: "json", topn: 50 })
+2024-10-22 12:20:53.534837 UTC - Successfully fetched top N gainers from TrueData API
+2024-10-22 12:20:58.361310700 UTC - Received /get-top-losers request: Query(TopNRecordsRequest { segment: "NSEEQ", response_type: "JSON", topn: 10 })
+2024-10-22 12:20:58.465135900 UTC - Successfully fetched top N losers from TrueData API
+2024-10-22 12:22:43.929658800 UTC - Received /get-history-bars request: Query(HistoryBarsRequest { symbol: "RELIANCE", bidask: 1, from: "240722T00:00:00", to: "241022T23:59:59", interval: "1day", response_type: "json" })
+2024-10-22 12:22:43.990725200 UTC - Successfully fetched data from TrueData API
+2024-10-22 12:23:01.312423200 UTC - Received /get-history-bars request: Query(HistoryBarsRequest { symbol: "RELIANCE", bidask: 1, from: "240722T00:00:00", to: "241022T23:59:59", interval: "60min", response_type: "json" })
+2024-10-22 12:23:01.642795700 UTC - Successfully fetched data from TrueData API
