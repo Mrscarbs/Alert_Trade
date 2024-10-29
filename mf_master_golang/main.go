@@ -101,5 +101,6 @@ func stock_wise_mf(cocode1 int) {
 	if err != nil {
 		log.Println(err)
 	}
+	db.Close()
 
 }
