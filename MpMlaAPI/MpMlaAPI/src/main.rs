@@ -18,7 +18,7 @@ struct ShareDetails {
 // Modified database connection function with proper URL format
 async fn connect_to_mysql_db() -> Result<Pool<MySql>, sqlx::Error> {
     // Corrected database URL format
-    let database_url = "mysql://root:Karma100%25@alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306/alert_trade_db";
+    let database_url = "mysql://admin:saumitrasuparn@alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306/alert_trade_db";
     
     MySqlPoolOptions::new()
         .max_connections(5)

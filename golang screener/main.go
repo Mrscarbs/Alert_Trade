@@ -74,7 +74,7 @@ func main() {
 func screener(c *gin.Context) {
 	query, _ := c.GetQuery("qu")
 	fmt.Println(query)
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 	log.SetOutput(log_file)
 	if err_db_open != nil {
 		log.Println(err_db_open)

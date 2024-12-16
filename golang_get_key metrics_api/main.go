@@ -112,7 +112,7 @@ func get_key_metrics(c *gin.Context) {
 	var data CombinedFinancialData
 	co_code, _ := c.GetQuery("co_code")
 	log.SetOutput(log_file)
-	db, err := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
+	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 	if err != nil {
 		log.Println(err)
 	}

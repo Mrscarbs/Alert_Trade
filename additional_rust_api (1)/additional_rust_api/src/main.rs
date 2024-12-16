@@ -141,7 +141,7 @@ async fn fetch_top_n_losers(client: &Client, params: &TopNRecordsRequest, access
 
 // Function to connect to MySQL database
 async fn connect_to_mysql_db() -> Result<Pool<MySql>, Error> {
-    let database_url = "mysql://root:Karma100%25@alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306/alert_trade_db";
+    let database_url = "mysql://admin:saumitrasuparn@alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306/alert_trade_db";
     let pool = MySqlPoolOptions::new()
         .max_connections(5)
         .connect(database_url)

@@ -70,7 +70,7 @@ func delete_position(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-	db, err := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
+	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 
 	if err != nil {
 		log.Println(err)
@@ -84,7 +84,7 @@ func get_cocde_symbol(c *gin.Context) {
 	log.SetOutput(log_file)
 	comp, _ := c.GetQuery("company_name")
 
-	db, err := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
+	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 
 	if err != nil {
 		log.Println(err)
@@ -99,7 +99,7 @@ func get_bulk_deals(c *gin.Context) {
 
 	log.SetOutput(log_file)
 
-	db, err := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
+	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 
 	if err != nil {
 		log.Println(err)
@@ -127,7 +127,7 @@ func get_bulk_deals(c *gin.Context) {
 func get_block_deals(c *gin.Context) {
 	log.SetOutput(log_file)
 
-	db, err := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
+	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 	if err != nil {
 		log.Println(err)
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Database connection error"})
@@ -172,7 +172,7 @@ func get_bulk_deals_cocode(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-	db, err := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
+	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 
 	if err != nil {
 		log.Println(err)
@@ -205,7 +205,7 @@ func get_block_deals_cocode(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-	db, err := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
+	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 
 	if err != nil {
 		log.Println(err)
@@ -235,7 +235,7 @@ func get_shareholding_mp_mla(c *gin.Context) {
 
 	comp_name, _ := c.GetQuery("comp_name")
 
-	db, err := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
+	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 
 	if err != nil {
 		log.Println(err)

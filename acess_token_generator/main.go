@@ -51,7 +51,7 @@ func Get_id_pass(api_id int, log_file *os.File) (string, string) {
 	var password string
 	var start_time string
 	var last_update_time string
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 
 	if err_db_open != nil {
 		log.Println(err_db_open)
@@ -107,7 +107,7 @@ func update_insert_acess_token_db(acess_token string, api_id int, Exipers_in int
 
 	expire_timestamp := current_timestamp + int64(Exipers_in)
 
-	db, err_db_open := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
+	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 
 	if err_db_open != nil {
 		log.Println(err_db_open)

@@ -29,7 +29,7 @@ func main() {
 	Side := get_excel_column_extractor("Side")
 	for c := 0; c < len(companies); c++ {
 		var ticker string
-		db, err := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
+		db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 		if err != nil {
 			log.Println(err)
 		}
@@ -51,7 +51,7 @@ func main() {
 	var side_num = 0
 	for i := 0; i < len(companies); i++ {
 		fmt.Println("er")
-		db, err := sql.Open("mysql", "root:Karma100%@tcp(alerttrade.cbgqgqswkxrn.eu-north-1.rds.amazonaws.com:3306)/alert_trade_db")
+		db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 		if err != nil {
 			log.Println(err)
 		}
