@@ -14,7 +14,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFsZXJ0dHJhZGUiLCJyb2xlIjoiQWRtaW4iLCJuYmYiOjE3MzAxMDgzNTQsImV4cCI6MTczMDk3MjM1NCwiaWF0IjoxNzMwMTA4MzU0LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDE5MSJ9.1kAR-vVgNgl1HYbexgQjqm0KXVzixZHVXJecoDasDSc"
+const api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imluc2JhYXBpcyIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTczNDk2MDMwMiwiZXhwIjoxNzY2NjY5MTAyLCJpYXQiOjE3MzQ5NjAzMDIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.UqzyAKBMcDMmPL-kgaZtnusOAWOuB3v1tVIu_PZsJp8"
 
 type struct_company_master struct {
 	Success bool `json:"success"`
@@ -143,7 +143,7 @@ func main() {
 func company_master(log_file *os.File) {
 	var unfolded_json struct_company_master
 	log.SetOutput(log_file)
-	url := "http://jwttoken.cmots.com/AlertTrade/api/CompanyMaster"
+	url := "https://insbaapis.cmots.com/api/CompanyMaster"
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -210,7 +210,7 @@ func get_ttm_ratios(log_file *os.File) {
 	// fmt.Println(list_cocodes)
 	for i := 0; i < len(list_cocodes); i++ {
 		str_cocode := strconv.Itoa(list_cocodes[i])
-		url := fmt.Sprintf("http://jwttoken.cmots.com/AlertTrade/api/DailyRatios/%s/S/", str_cocode)
+		url := fmt.Sprintf("https://insbaapis.cmots.com/api/DailyRatios/%s/S/", str_cocode)
 		fmt.Println(url)
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
@@ -270,7 +270,7 @@ func get_quaterly_ratios(log_file *os.File) {
 	}
 	for i := 0; i < len(list_cocodes); i++ {
 		str_cocode := strconv.Itoa(list_cocodes[i])
-		url := fmt.Sprintf("http://jwttoken.cmots.com/AlertTrade/api/QuarterlyRatio/%s/S/", str_cocode)
+		url := fmt.Sprintf("https://insbaapis.cmots.com/api/QuarterlyRatio/%s/S/", str_cocode)
 		fmt.Println(url)
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
@@ -326,7 +326,7 @@ func get_quaterly_ratios2(log_file *os.File) {
 	}
 	for i := 0; i < len(list_cocodes); i++ {
 		str_cocode := strconv.Itoa(list_cocodes[i])
-		url := fmt.Sprintf("http://jwttoken.cmots.com/AlertTrade/api/QuarterlyRatio/%s/S/", str_cocode)
+		url := fmt.Sprintf("https://insbaapis.cmots.com/api/QuarterlyRatio/%s/S/", str_cocode)
 		fmt.Println(url)
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
@@ -383,7 +383,7 @@ func get_quaterly_ratios3(log_file *os.File) {
 	}
 	for i := 0; i < len(list_cocodes); i++ {
 		str_cocode := strconv.Itoa(list_cocodes[i])
-		url := fmt.Sprintf("http://jwttoken.cmots.com/AlertTrade/api/QuarterlyRatio/%s/S/", str_cocode)
+		url := fmt.Sprintf("https://insbaapis.cmots.com/api/QuarterlyRatio/%s/S/", str_cocode)
 		fmt.Println(url)
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
@@ -440,7 +440,7 @@ func get_cash_fow_ratio(log_file *os.File) {
 	}
 	for i := 0; i < len(list_cocodes); i++ {
 		str_cocode := strconv.Itoa(list_cocodes[i])
-		url := fmt.Sprintf("http://jwttoken.cmots.com/AlertTrade/api/CashFlowRatios/%s/S/", str_cocode)
+		url := fmt.Sprintf("https://insbaapis.cmots.com/api/CashFlowRatios/%s/S/", str_cocode)
 		fmt.Println(url)
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {

@@ -13,7 +13,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFsZXJ0dHJhZGUiLCJyb2xlIjoiQWRtaW4iLCJuYmYiOjE3MzAxMDgzNTQsImV4cCI6MTczMDk3MjM1NCwiaWF0IjoxNzMwMTA4MzU0LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MDE5MSJ9.1kAR-vVgNgl1HYbexgQjqm0KXVzixZHVXJecoDasDSc"
+const api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imluc2JhYXBpcyIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTczNDk2MDMwMiwiZXhwIjoxNzY2NjY5MTAyLCJpYXQiOjE3MzQ5NjAzMDIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.UqzyAKBMcDMmPL-kgaZtnusOAWOuB3v1tVIu_PZsJp8"
 
 type bulk_response struct {
 	Success bool `json:"success"`
@@ -48,7 +48,7 @@ func main() {
 
 func get_bulk_deals(log_file *os.File) {
 	var unfolded_bulk bulk_response
-	url := "http://jwttoken.cmots.com/AlertTrade/api/BulkBlockDeal/NSE/Bulk"
+	url := "https://insbaapis.cmots.com/api/BulkBlockDeal/NSE/Bulk"
 
 	log.SetOutput(log_file)
 	req, err := http.NewRequest("GET", url, nil)
@@ -84,7 +84,7 @@ func get_bulk_deals(log_file *os.File) {
 
 func get_block_deals(log_file *os.File) {
 	var unfolded_bulk bulk_response
-	url := "http://jwttoken.cmots.com/AlertTrade/api/BulkBlockDeal/NSE/Block"
+	url := "https://insbaapis.cmots.com/api/BulkBlockDeal/NSE/Block"
 
 	log.SetOutput(log_file)
 	req, err := http.NewRequest("GET", url, nil)
@@ -119,7 +119,7 @@ func get_block_deals(log_file *os.File) {
 }
 
 func get_mutualfunds_holdings(log_file *os.File) {
-	url := "http://jwttoken.cmots.com/AlertTrade/api/CompanyWiseMFHolding/92/10"
+	url := "https://insbaapis.cmots.com/api/CompanyWiseMFHolding/92/10"
 
 	log.SetOutput(log_file)
 	req, err := http.NewRequest("GET", url, nil)
