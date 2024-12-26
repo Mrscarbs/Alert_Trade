@@ -145,5 +145,6 @@ func get_key_metrics(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, data)
+	db.Close()
 
 }

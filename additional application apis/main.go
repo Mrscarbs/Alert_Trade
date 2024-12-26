@@ -77,6 +77,7 @@ func delete_position(c *gin.Context) {
 	}
 
 	db.Exec("call stp_delete_user_position_by_trade_id(?)", trade_id_int)
+	db.Close()
 }
 
 func get_cocde_symbol(c *gin.Context) {
@@ -93,6 +94,7 @@ func get_cocde_symbol(c *gin.Context) {
 	db.QueryRow("call stp_get_symbol_and_code_by_companyname(?)", comp).Scan(&company_detailt.Symbol, &company_detailt.Co_code)
 
 	c.IndentedJSON(http.StatusOK, company_detailt)
+	db.Close()
 }
 
 func get_bulk_deals(c *gin.Context) {
@@ -111,6 +113,7 @@ func get_bulk_deals(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
+	defer rows.Close()
 	for rows.Next() {
 		var bulk_object BulkDeal
 		err := rows.Scan(&bulk_object.Datetime, &bulk_object.COCode, &bulk_object.ScripCode, &bulk_object.Serial, &bulk_object.ScripName, &bulk_object.ClientName, &bulk_object.BuySell, &bulk_object.QtyShares, &bulk_object.AvgPrice)
@@ -122,6 +125,7 @@ func get_bulk_deals(c *gin.Context) {
 		bulk_list = append(bulk_list, bulk_object)
 	}
 	c.IndentedJSON(http.StatusOK, bulk_list)
+	db.Close()
 
 }
 func get_block_deals(c *gin.Context) {
@@ -163,6 +167,7 @@ func get_block_deals(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, block_list)
+	db.Close()
 }
 func get_bulk_deals_cocode(c *gin.Context) {
 
@@ -181,9 +186,11 @@ func get_bulk_deals_cocode(c *gin.Context) {
 	bulk_list := []BulkDeal{}
 
 	rows, err := db.Query("call stp_get_bulk_deals_by_cocode(?)", cocode_int)
+
 	if err != nil {
 		log.Println(err)
 	}
+	defer rows.Close()
 	for rows.Next() {
 		var bulk_object BulkDeal
 		err := rows.Scan(&bulk_object.Datetime, &bulk_object.COCode, &bulk_object.ScripCode, &bulk_object.Serial, &bulk_object.ScripName, &bulk_object.ClientName, &bulk_object.BuySell, &bulk_object.QtyShares, &bulk_object.AvgPrice)
@@ -195,6 +202,7 @@ func get_bulk_deals_cocode(c *gin.Context) {
 		bulk_list = append(bulk_list, bulk_object)
 	}
 	c.IndentedJSON(http.StatusOK, bulk_list)
+	db.Close()
 
 }
 func get_block_deals_cocode(c *gin.Context) {
@@ -217,6 +225,7 @@ func get_block_deals_cocode(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
+	defer rows.Close()
 	for rows.Next() {
 		var bulk_object BlockDeal
 		err := rows.Scan(&bulk_object.Datetime, &bulk_object.COCode, &bulk_object.ScripCode, &bulk_object.Serial, &bulk_object.ScripName, &bulk_object.ClientName, &bulk_object.BuySell, &bulk_object.QtyShares, &bulk_object.AvgPrice)
@@ -228,6 +237,7 @@ func get_block_deals_cocode(c *gin.Context) {
 		bulk_list = append(bulk_list, bulk_object)
 	}
 	c.IndentedJSON(http.StatusOK, bulk_list)
+	db.Close()
 
 }
 
@@ -244,7 +254,7 @@ func get_shareholding_mp_mla(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-
+	defer rows.Close()
 	list_shareholding := []Shareholding{}
 	for rows.Next() {
 		var share_holding_mp Shareholding
@@ -252,4 +262,5 @@ func get_shareholding_mp_mla(c *gin.Context) {
 		list_shareholding = append(list_shareholding, share_holding_mp)
 	}
 	c.IndentedJSON(http.StatusOK, list_shareholding)
+	db.Close()
 }

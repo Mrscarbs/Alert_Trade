@@ -203,6 +203,7 @@ func get_ttm_ratios(log_file *os.File) {
 		log.Println(err)
 	}
 	list_cocodes := []int{}
+	defer rows.Close()
 	for rows.Next() {
 		var cocode int
 		rows.Scan(&cocode)
@@ -270,6 +271,7 @@ func get_quaterly_ratios(log_file *os.File) {
 		log.Println(err)
 	}
 	list_cocodes := []int{}
+	defer rows.Close()
 	for rows.Next() {
 		var cocode int
 		rows.Scan(&cocode)
@@ -330,6 +332,7 @@ func get_quaterly_ratios2(log_file *os.File) {
 	if err != nil {
 		log.Println(err)
 	}
+	defer rows.Close()
 	list_cocodes := []int{}
 	for rows.Next() {
 		var cocode int
@@ -359,7 +362,7 @@ func get_quaterly_ratios2(log_file *os.File) {
 
 		// fmt.Println(string(res_body))
 		json.Unmarshal(res_body, &unfolded_quaterly)
-		if len(unfolded_quaterly.Data) == 0 {
+		if len(unfolded_quaterly.Data) <= 1 {
 			error_message := fmt.Sprintf("TTM data not found for cocode: %s", str_cocode)
 			log.Println(error_message)
 			continue
@@ -393,6 +396,7 @@ func get_quaterly_ratios3(log_file *os.File) {
 		log.Println(err)
 	}
 	list_cocodes := []int{}
+	defer rows.Close()
 	for rows.Next() {
 		var cocode int
 		rows.Scan(&cocode)
@@ -421,7 +425,7 @@ func get_quaterly_ratios3(log_file *os.File) {
 
 		// fmt.Println(string(res_body))
 		json.Unmarshal(res_body, &unfolded_quaterly)
-		if len(unfolded_quaterly.Data) == 0 {
+		if len(unfolded_quaterly.Data) <= 2 {
 			error_message := fmt.Sprintf("TTM data not found for cocode: %s", str_cocode)
 			log.Println(error_message)
 			continue
@@ -454,6 +458,7 @@ func get_cash_fow_ratio(log_file *os.File) {
 	if err != nil {
 		log.Println(err)
 	}
+	defer rows.Close()
 	list_cocodes := []int{}
 	for rows.Next() {
 		var cocode int
