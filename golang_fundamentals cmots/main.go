@@ -165,6 +165,7 @@ func company_master(log_file *os.File) {
 	// fmt.Println(string(res_body))
 
 	json.Unmarshal(res_body, &unfolded_json)
+
 	// fmt.Println(unfolded_json)
 	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 
@@ -172,6 +173,7 @@ func company_master(log_file *os.File) {
 		log.Println(err_db_open)
 	}
 	for i := 0; i < len(unfolded_json.Data); i++ {
+
 		data_struct := unfolded_json.Data[i]
 		_, err := db.Exec(
 			"CALL stp_insert_or_update_company_master_cmots(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -230,6 +232,11 @@ func get_ttm_ratios(log_file *os.File) {
 		}
 
 		json.Unmarshal(res_body, &unfolded_ttm)
+		if len(unfolded_ttm.Data) == 0 {
+			error_message := fmt.Sprintf("TTM data not found for cocode: %s", str_cocode)
+			log.Println(error_message)
+			continue
+		}
 		data_struct := unfolded_ttm.Data[0]
 		_, err_exec := db.Exec(
 			"CALL stp_insert_or_update_financial_data_cmots(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -291,6 +298,11 @@ func get_quaterly_ratios(log_file *os.File) {
 
 		// fmt.Println(string(res_body))
 		json.Unmarshal(res_body, &unfolded_quaterly)
+		if len(unfolded_quaterly.Data) == 0 {
+			error_message := fmt.Sprintf("TTM data not found for cocode: %s", str_cocode)
+			log.Println(error_message)
+			continue
+		}
 		data_struct := unfolded_quaterly.Data[0]
 
 		_, err_exec := db.Exec(
@@ -347,6 +359,11 @@ func get_quaterly_ratios2(log_file *os.File) {
 
 		// fmt.Println(string(res_body))
 		json.Unmarshal(res_body, &unfolded_quaterly)
+		if len(unfolded_quaterly.Data) == 0 {
+			error_message := fmt.Sprintf("TTM data not found for cocode: %s", str_cocode)
+			log.Println(error_message)
+			continue
+		}
 		data_struct := unfolded_quaterly.Data[1]
 
 		_, err_exec := db.Exec(
@@ -404,6 +421,11 @@ func get_quaterly_ratios3(log_file *os.File) {
 
 		// fmt.Println(string(res_body))
 		json.Unmarshal(res_body, &unfolded_quaterly)
+		if len(unfolded_quaterly.Data) == 0 {
+			error_message := fmt.Sprintf("TTM data not found for cocode: %s", str_cocode)
+			log.Println(error_message)
+			continue
+		}
 		data_struct := unfolded_quaterly.Data[2]
 
 		_, err_exec := db.Exec(
