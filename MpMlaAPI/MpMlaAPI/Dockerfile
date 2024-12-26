@@ -1,31 +1,21 @@
 # Build stage
-FROM rust:1.75-slim-bullseye as builder
+FROM rust:latest as builder
 
-# Install build dependencies
-RUN apt-get update && \
-    apt-get install -y default-libmysqlclient-dev libssl-dev pkg-config && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copy source code
 WORKDIR /app
 COPY . .
 
-# Build the application
-RUN cargo build --release
-
-# Final stage
-FROM debian:bullseye-slim
-
-# Install runtime dependencies
 RUN apt-get update && \
-    apt-get install -y default-libmysqlclient-dev libssl1.1 ca-certificates curl && \
+    apt-get install -y pkg-config libssl-dev default-libmysqlclient-dev && \
+    cargo build --release
+
+# Runtime stage
+FROM debian:bookworm-slim
+
+RUN apt-get update && \
+    apt-get install -y libssl3 default-libmysqlclient-dev ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy the binary from builder
 COPY --from=builder /app/target/release/MpMlaAPI /usr/local/bin/
 
-# Expose port
 EXPOSE 8080
-
-# Run the binary
 CMD ["MpMlaAPI"]
