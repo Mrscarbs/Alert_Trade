@@ -13,7 +13,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imluc2JhYXBpcyIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTczNDk2MDMwMiwiZXhwIjoxNzY2NjY5MTAyLCJpYXQiOjE3MzQ5NjAzMDIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.UqzyAKBMcDMmPL-kgaZtnusOAWOuB3v1tVIu_PZsJp8"
+var api_key = os.Getenv("api_key_cmots")
 
 type bulk_response struct {
 	Success bool `json:"success"`
@@ -31,7 +31,21 @@ type bulk_response struct {
 	Message string `json:"message"`
 }
 
+var db *sql.DB
+var dsn string
+
 func main() {
+	var err error
+	dsn = os.Getenv("dsn")
+	db, err = sql.Open("mysql", dsn)
+	if err != nil {
+		log.Println(err)
+	}
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(5 * time.Minute)
+	db.SetConnMaxIdleTime(time.Minute * 5)
+	defer db.Close()
 	log_file, err := os.Create("bulk_bluck_log.log")
 	if err != nil {
 		fmt.Println(err)
@@ -67,11 +81,7 @@ func get_bulk_deals(log_file *os.File) {
 	// fmt.Println(string(res_body))
 	json.Unmarshal(res_body, &unfolded_bulk)
 	// fmt.Println(unfolded_bulk)
-	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
-	log.SetOutput(log_file)
-	if err_db_open != nil {
-		log.Println(err_db_open)
-	}
+
 	for i := 0; i < len(unfolded_bulk.Data); i++ {
 		data := unfolded_bulk.Data[i]
 		_, err := db.Exec("call stp_bulk_deals(?,?,?,?,?,?,?,?,?)", data.Date, data.COCODE, data.Scripcode, data.Serial, data.ScripName, data.ClientName, data.Buysell, data.QTYSHARES, data.AVGPRICE)
@@ -103,11 +113,7 @@ func get_block_deals(log_file *os.File) {
 	// fmt.Println(string(res_body))
 	json.Unmarshal(res_body, &unfolded_bulk)
 	// fmt.Println(unfolded_bulk)
-	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
-	log.SetOutput(log_file)
-	if err_db_open != nil {
-		log.Println(err_db_open)
-	}
+
 	for i := 0; i < len(unfolded_bulk.Data); i++ {
 		data := unfolded_bulk.Data[i]
 		_, err := db.Exec("call stp_block_deals(?,?,?,?,?,?,?,?,?)", data.Date, data.COCODE, data.Scripcode, data.Serial, data.ScripName, data.ClientName, data.Buysell, data.QTYSHARES, data.AVGPRICE)

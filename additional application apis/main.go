@@ -6,12 +6,16 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var log_file, _ = os.Create("additional_application_apis_log.log")
+var db *sql.DB
+var dsn string
 
 type res_company_name_cocode struct {
 	Symbol  string
@@ -50,8 +54,26 @@ type Shareholding struct {
 }
 
 func main() {
-
+	var err error
+	dsn = os.Getenv("dsn")
+	db, err = sql.Open("mysql", dsn)
+	if err != nil {
+		log.Println(err)
+	}
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(5 * time.Minute)
+	db.SetConnMaxIdleTime(time.Minute * 5)
+	defer db.Close()
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // Allow all origins (change this to restrict access)
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour, // Preflight request cache duration
+	}))
 	router.GET("delete_position", delete_position)
 	router.GET("get_cocde_symbol", get_cocde_symbol)
 	router.GET("get_bulk_deals", get_bulk_deals)
@@ -70,12 +92,6 @@ func delete_position(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
-
-	if err != nil {
-		log.Println(err)
-	}
-	defer db.Close()
 
 	db.Exec("call stp_delete_user_position_by_trade_id(?)", trade_id_int)
 
@@ -85,13 +101,6 @@ func get_cocde_symbol(c *gin.Context) {
 	var company_detailt res_company_name_cocode
 	log.SetOutput(log_file)
 	comp, _ := c.GetQuery("company_name")
-
-	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
-
-	if err != nil {
-		log.Println(err)
-	}
-	defer db.Close()
 
 	db.QueryRow("call stp_get_symbol_and_code_by_companyname(?)", comp).Scan(&company_detailt.Symbol, &company_detailt.Co_code)
 
@@ -103,12 +112,6 @@ func get_bulk_deals(c *gin.Context) {
 
 	log.SetOutput(log_file)
 
-	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
-
-	if err != nil {
-		log.Println(err)
-	}
-	defer db.Close()
 	bulk_list := []BulkDeal{}
 
 	rows, err := db.Query("call stp_get_all_bulk_deals()")
@@ -131,14 +134,6 @@ func get_bulk_deals(c *gin.Context) {
 }
 func get_block_deals(c *gin.Context) {
 	log.SetOutput(log_file)
-
-	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
-	if err != nil {
-		log.Println(err)
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Database connection error"})
-		return
-	}
-	defer db.Close()
 
 	block_list := []BlockDeal{}
 
@@ -178,12 +173,7 @@ func get_bulk_deals_cocode(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 
-	if err != nil {
-		log.Println(err)
-	}
-	defer db.Close()
 	bulk_list := []BulkDeal{}
 
 	rows, err := db.Query("call stp_get_bulk_deals_by_cocode(?)", cocode_int)
@@ -213,12 +203,6 @@ func get_block_deals_cocode(c *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
-
-	if err != nil {
-		log.Println(err)
-	}
-	defer db.Close()
 
 	bulk_list := []BlockDeal{}
 
@@ -245,12 +229,6 @@ func get_shareholding_mp_mla(c *gin.Context) {
 
 	comp_name, _ := c.GetQuery("comp_name")
 
-	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
-
-	if err != nil {
-		log.Println(err)
-	}
-	defer db.Close()
 	rows, err := db.Query("call stp_get_shareholdings_mp_mla_by_share_name(?)", comp_name)
 	if err != nil {
 		log.Println(err)

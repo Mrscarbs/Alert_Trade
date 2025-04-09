@@ -14,7 +14,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imluc2JhYXBpcyIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTczNDk2MDMwMiwiZXhwIjoxNzY2NjY5MTAyLCJpYXQiOjE3MzQ5NjAzMDIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTAxOTEiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjUwMTkxIn0.UqzyAKBMcDMmPL-kgaZtnusOAWOuB3v1tVIu_PZsJp8"
+var api_key = os.Getenv("api_key_cmots")
 
 type struct_company_master struct {
 	Success bool `json:"success"`
@@ -121,7 +121,22 @@ type cashflow_ratio struct {
 	Message string `json:"message"`
 }
 
+var db *sql.DB
+var dsn string
+
 func main() {
+
+	var err error
+	dsn = os.Getenv("dsn")
+	db, err = sql.Open("mysql", dsn)
+	if err != nil {
+		log.Println(err)
+	}
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(5 * time.Minute)
+	db.SetConnMaxIdleTime(time.Minute * 5)
+	defer db.Close()
 	log_file, err := os.Create("company_master.log")
 	if err != nil {
 		fmt.Println(err)
@@ -167,11 +182,7 @@ func company_master(log_file *os.File) {
 	json.Unmarshal(res_body, &unfolded_json)
 
 	// fmt.Println(unfolded_json)
-	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 
-	if err_db_open != nil {
-		log.Println(err_db_open)
-	}
 	for i := 0; i < len(unfolded_json.Data); i++ {
 
 		data_struct := unfolded_json.Data[i]
@@ -188,16 +199,13 @@ func company_master(log_file *os.File) {
 			log.Println("Error executing stored procedure:", err)
 		}
 	}
-	db.Close()
+
 }
 
 func get_ttm_ratios(log_file *os.File) {
 	var unfolded_ttm struct_ttm
-	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 	log.SetOutput(log_file)
-	if err_db_open != nil {
-		log.Println(err_db_open)
-	}
+
 	rows, err := db.Query("call stp_get_all_cocodes_cmots()")
 	if err != nil {
 		log.Println(err)
@@ -255,17 +263,13 @@ func get_ttm_ratios(log_file *os.File) {
 			log.Println("Error executing stored procedure:", err_exec)
 		}
 	}
-	db.Close()
 
 }
 
 func get_quaterly_ratios(log_file *os.File) {
 	var unfolded_quaterly stuct_quaterly_ratios
-	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 	log.SetOutput(log_file)
-	if err_db_open != nil {
-		log.Println(err_db_open)
-	}
+
 	rows, err := db.Query("call stp_get_all_cocodes_cmots()")
 	if err != nil {
 		log.Println(err)
@@ -319,15 +323,12 @@ func get_quaterly_ratios(log_file *os.File) {
 		}
 
 	}
-	db.Close()
+
 }
 func get_quaterly_ratios2(log_file *os.File) {
 	var unfolded_quaterly stuct_quaterly_ratios
-	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 	log.SetOutput(log_file)
-	if err_db_open != nil {
-		log.Println(err_db_open)
-	}
+
 	rows, err := db.Query("call stp_get_all_cocodes_cmots()")
 	if err != nil {
 		log.Println(err)
@@ -381,16 +382,13 @@ func get_quaterly_ratios2(log_file *os.File) {
 		}
 
 	}
-	db.Close()
+
 }
 
 func get_quaterly_ratios3(log_file *os.File) {
 	var unfolded_quaterly stuct_quaterly_ratios
-	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 	log.SetOutput(log_file)
-	if err_db_open != nil {
-		log.Println(err_db_open)
-	}
+
 	rows, err := db.Query("call stp_get_all_cocodes_cmots()")
 	if err != nil {
 		log.Println(err)
@@ -444,16 +442,13 @@ func get_quaterly_ratios3(log_file *os.File) {
 		}
 
 	}
-	db.Close()
+
 }
 
 func get_cash_fow_ratio(log_file *os.File) {
 	var cash_ratio_struct cashflow_ratio
-	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 	log.SetOutput(log_file)
-	if err_db_open != nil {
-		log.Println(err_db_open)
-	}
+
 	rows, err := db.Query("call stp_get_all_cocodes_cmots()")
 	if err != nil {
 		log.Println(err)
@@ -508,5 +503,5 @@ func get_cash_fow_ratio(log_file *os.File) {
 		}
 
 	}
-	db.Close()
+
 }

@@ -14,7 +14,21 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+var db *sql.DB
+var dsn string
+
 func main() {
+	var err error
+	dsn = os.Getenv("dsn")
+	db, err = sql.Open("mysql", dsn)
+	if err != nil {
+		log.Println(err)
+	}
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(5 * time.Minute)
+	db.SetConnMaxIdleTime(time.Minute * 5)
+	defer db.Close()
 	file, err := os.Create("script_master.log")
 	if err != nil {
 		fmt.Println(err)
@@ -40,17 +54,12 @@ func get_userid_pass(log_file *os.File, api_id int) (string, string) {
 	var password string
 	var start_time string
 	var last_update_time string
-	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
-
-	if err_db_open != nil {
-		log.Println(err_db_open)
-	}
 
 	err_db_stp := db.QueryRow("call alert_trade_db.stp_get_api_config(?)", api_id).Scan(&api_id, &provider, &username, &password, &start_time, &last_update_time)
 	if err_db_stp != nil {
 		log.Println(err_db_stp)
 	}
-	defer db.Close()
+
 	return username, password
 }
 
@@ -85,11 +94,7 @@ func get_script_master_true_data(url string, log_file *os.File) {
 	company := df.Col("company")
 	ticksize := df.Col("ticksize")
 	circuit := df.Col("circuit")
-	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
 
-	if err_db_open != nil {
-		log.Println(err_db_open)
-	}
 	for i := 0; i < symbolid.Len(); i++ {
 		_, err_exec := db.Exec("call stp_insert_into_symbol_master(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 			symbolid.Elem(i).String(),

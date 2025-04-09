@@ -8,7 +8,10 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -33,8 +36,30 @@ type PlaceOrderReqBody struct {
 	Quantity        string `json:"quantity"`
 }
 
+var db *sql.DB
+var dsn string
+
 func main() {
+	var err error
+	dsn = os.Getenv("dsn")
+	db, err = sql.Open("mysql", dsn)
+	if err != nil {
+		log.Println(err)
+	}
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(5 * time.Minute)
+	db.SetConnMaxIdleTime(time.Minute * 5)
+	defer db.Close()
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // Allow all origins (change this to restrict access)
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour, // Preflight request cache duration
+	}))
 	router.POST("/place_order_angleone", placeOrderAngleOne)
 	router.POST("/cancelOrderAngleOne", cancelOrderAngleOne)
 
@@ -45,17 +70,10 @@ func main() {
 func placeOrderAngleOne(c *gin.Context) {
 	subID, _ := c.GetQuery("sub_id")
 	userID, _ := c.GetQuery("id")
-	dsn := "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db"
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		log.Println("Error connecting to database:", err)
-		c.JSON(500, gin.H{"error": "Database connection failed"})
-		return
-	}
-	defer db.Close()
 
 	// Fetch access token
 	var accessToken string
+	var err error
 	err = db.QueryRow("call stp_getAccessToken_broker(?, ?)", subID, userID).Scan(&accessToken)
 	if err != nil {
 		log.Println("Error fetching access token:", err)
@@ -129,17 +147,10 @@ func cancelOrderAngleOne(c *gin.Context) {
 
 	subID, _ := c.GetQuery("sub_id")
 	userID, _ := c.GetQuery("id")
-	dsn := "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db"
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		log.Println("Error connecting to database:", err)
-		c.JSON(500, gin.H{"error": "Database connection failed"})
-		return
-	}
-	defer db.Close()
 
 	// Fetch access token
 	var accessToken string
+	var err error
 	err = db.QueryRow("call stp_getAccessToken_broker(?, ?)", subID, userID).Scan(&accessToken)
 	if err != nil {
 		log.Println("Error fetching access token:", err)

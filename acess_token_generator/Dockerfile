@@ -1,5 +1,5 @@
 # Start from the official Go 1.22 image
-FROM golang:1.22-alpine
+FROM golang:1.23-alpine
 
 # Install MySQL client
 RUN apk add --no-cache mysql-client

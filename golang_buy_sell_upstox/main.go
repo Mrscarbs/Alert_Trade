@@ -10,7 +10,9 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -38,8 +40,30 @@ type OrderRequest struct {
 	IsAmo             bool    `json:"is_amo"`
 }
 
+var db *sql.DB
+var dsn string
+
 func main() {
+	var err error
+	dsn = os.Getenv("dsn")
+	db, err = sql.Open("mysql", dsn)
+	if err != nil {
+		log.Println(err)
+	}
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(5 * time.Minute)
+	db.SetConnMaxIdleTime(time.Minute * 5)
+	defer db.Close()
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // Allow all origins (change this to restrict access)
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour, // Preflight request cache duration
+	}))
 	router.GET("/place_order", place_order)
 	router.GET("/cancel_order", cancel_order)
 	router.Run("0.0.0.0:8080")
@@ -51,16 +75,9 @@ func place_order(c *gin.Context) {
 	log.SetOutput(log_file)
 
 	// Connect to the database
-	dsn := "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db"
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		log.Println("Error connecting to database:", err)
-		c.JSON(500, gin.H{"error": "Database connection failed"})
-		return
-	}
-	defer db.Close()
 
 	// Fetch access token
+	var err error
 	var accessToken string
 	err = db.QueryRow("call stp_getAccessToken_broker(?, ?)", subID, userID).Scan(&accessToken)
 	if err != nil {
@@ -157,16 +174,9 @@ func cancel_order(c *gin.Context) {
 	log.SetOutput(log_file)
 
 	// Connect to the database
-	dsn := "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db"
-	db, err := sql.Open("mysql", dsn)
-	if err != nil {
-		log.Println("Error connecting to database:", err)
-		c.JSON(500, gin.H{"error": "Database connection failed"})
-		return
-	}
-	defer db.Close()
 
 	// Fetch access token
+	var err error
 	var accessToken string
 	err = db.QueryRow("call stp_getAccessToken_broker(?, ?)", subID, userID).Scan(&accessToken)
 	if err != nil {

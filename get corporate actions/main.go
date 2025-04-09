@@ -8,7 +8,9 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-gota/gota/dataframe"
 	_ "github.com/go-sql-driver/mysql"
@@ -31,6 +33,14 @@ var main_log, _ = os.Create("main_corp_log.log")
 
 func main() {
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // Allow all origins (change this to restrict access)
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour, // Preflight request cache duration
+	}))
 	router.GET("/get_corp_action", get_corp_action)
 	router.Run("0.0.0.0:8081")
 

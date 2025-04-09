@@ -14,6 +14,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+var db *sql.DB
+var dsn string
+
 type Acess_token_response_frame struct {
 	AccessToken string `json:"access_token"`
 	TokenType   string `json:"token_type"`
@@ -24,10 +27,20 @@ type Acess_token_response_frame struct {
 }
 
 func main() {
-
+	dsn = os.Getenv("dsn")
 	log_file, _ := os.Create("acess_token_logs.log")
 	log.SetOutput(log_file)
 	log.Println("generating token")
+	var err error
+	db, err = sql.Open("mysql", dsn)
+	if err != nil {
+		log.Println(err)
+	}
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(5 * time.Minute)
+	db.SetConnMaxIdleTime(time.Minute * 5)
+	defer db.Close()
 	username, password := Get_id_pass(1, log_file)
 
 	i := 1
@@ -51,17 +64,12 @@ func Get_id_pass(api_id int, log_file *os.File) (string, string) {
 	var password string
 	var start_time string
 	var last_update_time string
-	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
-
-	if err_db_open != nil {
-		log.Println(err_db_open)
-	}
 
 	err_db_stp := db.QueryRow("call alert_trade_db.stp_get_api_config(?)", api_id).Scan(&api_id, &provider, &username, &password, &start_time, &last_update_time)
 	if err_db_stp != nil {
 		log.Println(err_db_stp)
 	}
-	defer db.Close()
+
 	return username, password
 
 }
@@ -107,16 +115,10 @@ func update_insert_acess_token_db(acess_token string, api_id int, Exipers_in int
 
 	expire_timestamp := current_timestamp + int64(Exipers_in)
 
-	db, err_db_open := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
-
-	if err_db_open != nil {
-		log.Println(err_db_open)
-	}
-
 	_, err_db_stp := db.Exec("call alert_trade_db.stp_update_access_token(?,?,?)", api_id, acess_token, expire_timestamp)
 	if err_db_stp != nil {
 		log.Println(err_db_stp)
 	}
-	db.Close()
+
 	return Exipers_in
 }

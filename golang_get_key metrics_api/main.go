@@ -5,7 +5,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -100,9 +102,30 @@ type CombinedFinancialData struct {
 }
 
 var log_file, _ = os.Create("golang_key_metrics_log.log")
+var db *sql.DB
+var dsn string
 
 func main() {
+	var err error
+	dsn = os.Getenv("dsn")
+	db, err = sql.Open("mysql", dsn)
+	if err != nil {
+		log.Println(err)
+	}
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(5)
+	db.SetConnMaxLifetime(5 * time.Minute)
+	db.SetConnMaxIdleTime(time.Minute * 5)
+	defer db.Close()
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"}, // Allow all origins (change this to restrict access)
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour, // Preflight request cache duration
+	}))
 	router.GET("/get_key_metrics", get_key_metrics)
 	router.Run("0.0.0.0:8080")
 
@@ -112,10 +135,7 @@ func get_key_metrics(c *gin.Context) {
 	var data CombinedFinancialData
 	co_code, _ := c.GetQuery("co_code")
 	log.SetOutput(log_file)
-	db, err := sql.Open("mysql", "admin:saumitrasuparn@tcp(alerttradedb.czqug0e2in8p.ap-south-1.rds.amazonaws.com:3306)/alert_trade_db")
-	if err != nil {
-		log.Println(err)
-	}
+
 	err_db := db.QueryRow("call stp_get_combined_financial_data_by_cocode(?)", co_code).Scan(
 		&data.CO_CODE, &data.TTMAson,
 		&data.MCAP1, &data.EV1, &data.PE1, &data.PBV1, &data.DIVYIELD1, &data.EPS1,
@@ -141,10 +161,9 @@ func get_key_metrics(c *gin.Context) {
 	)
 
 	if err_db != nil {
-		log.Println(err)
+		log.Println(err_db)
 	}
 
 	c.IndentedJSON(http.StatusOK, data)
-	db.Close()
 
 }
