@@ -158,6 +158,7 @@ func screener(c *gin.Context) {
 		}
 		list_struct_screen = append(list_struct_screen, financial_datacom)
 	}
+	rows.Close()
 	c.IndentedJSON(http.StatusOK, list_struct_screen)
 
 }

@@ -223,6 +223,12 @@ type llm_response struct {
 	} `json:"usage"`
 	ServiceTier string `json:"service_tier"`
 }
+type chat_details struct {
+	Messag_id int64
+	Eid       int64
+	Question  string
+	Answer    string
+}
 
 func main() {
 	var err error
@@ -258,7 +264,10 @@ func llm_api_final(c *gin.Context) {
 	}
 	final_json_string := string(final_json)
 	list_user_all_details = append(list_user_all_details, financial_para, final_json_string)
-	llm_resp := invoke_llm(query, list_user_all_details)
+	list_cahts := get_chats_buy_user(int64(eid_int))
+	llm_resp := invoke_llm(query, list_user_all_details, list_cahts)
+	fmt.Println(llm_resp)
+	insert_llm_chat_history(int64(eid_int), query, llm_resp.Choices[0].Message.Content)
 	c.IndentedJSON(http.StatusOK, llm_resp)
 
 }
@@ -510,9 +519,15 @@ func consolidated_acoount_generator(user_list []user_form) ([]CombinedFinancialD
 
 }
 
-func invoke_llm(query string, list_user_all_details []any) llm_response {
+func invoke_llm(query string, list_user_all_details []any, chat_history []chat_details) llm_response {
 	url := "https://api.openai.com/v1/chat/completions"
-	system_prompt := fmt.Sprintf("You are a helpful trading and investment assistant.This is all the details about the userts stock portfolio and the fundamental data for all of his stocks pls answer questions based on these details only. if the user asks for return for a perticular stock the formula will be (ltp(last traded price)-avg price(average price))*quantity,if the user asks for return percentage for a perticular stock the formula will be ((ltp(last traded price)-avg price(average price))/avg price(average price))*100, also show calculations where nessecary: %v", list_user_all_details)
+	json_chat_history, err := json.Marshal(chat_history)
+	if err != nil {
+		log.Println(err)
+	}
+	chat_history_string := string(json_chat_history)
+	fmt.Println(chat_history_string)
+	system_prompt := fmt.Sprintf("You are a helpful trading and investment assistant.This is all the details about the userts stock portfolio and the fundamental data for all of his stocks pls answer questions based on these details only. if the user asks for return for a perticular stock the formula will be (ltp(last traded price)-avg price(average price))*quantity,if the user asks for return percentage for a perticular stock the formula will be ((ltp(last traded price)-avg price(average price))/avg price(average price))*100, also show calculations where nessecary: %v,also these are the previous chats of the user the highest message id is the latest and the lowest chat id is the oldest the user can ask questions based on this chat history also:%s", list_user_all_details, chat_history_string)
 	fmt.Println(system_prompt)
 	requestBody := RequestBody{
 		Model: "gpt-4o",
@@ -548,4 +563,33 @@ func invoke_llm(query string, list_user_all_details []any) llm_response {
 		log.Println(err_llm)
 	}
 	return llm_response
+}
+
+func insert_llm_chat_history(eid int64, question string, answer string) {
+	_, err := db.Exec("call stp_insert_llm_chat_history(?,?,?)", eid, question, answer)
+	if err != nil {
+		log.Println(err)
+	}
+
+}
+
+func get_chats_buy_user(eid int64) []chat_details {
+	rows, err := db.Query("call stp_get_llm_chat_history_by_eid(?)", eid)
+	if err != nil {
+		log.Println(err)
+	}
+
+	list_chats := []chat_details{}
+	for rows.Next() {
+		var chat chat_details
+		err := rows.Scan(&chat.Messag_id, &chat.Eid, &chat.Question, &chat.Answer)
+		if err != nil {
+			log.Println(err)
+		}
+		list_chats = append(list_chats, chat)
+	}
+	rows.Close()
+	fmt.Println(list_chats)
+	return list_chats
+
 }
